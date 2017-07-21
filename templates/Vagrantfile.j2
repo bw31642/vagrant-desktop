@@ -1,0 +1,29 @@
+Vagrant.configure(2) do |config|
+  config.vm.box = "{{ boxname | default('tiny-ubuntu') }}"
+  config.vm.hostname = "{{ name | default('ubuntu-desktop')}}"
+  config.vm.box_check_update = false
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+  {% if private_net %}
+  config.vm.network "private_network", :ip => "{{ private_net['ip'] }}", :name => '{{ private_net['name'] }}', :adapter => {{ private_net['adapter'] }}
+  {% endif %}
+
+  config.vm.provider "virtualbox" do |vb|
+      vb.name = "{{ name | default('ubuntu-desktop') }}"
+      vb.memory = "{{ memory | default('2048') }}"
+      vb.cpus = "{{ ncpu | default('2') }}"
+      vb.customize ["modifyvm", :id, "--vram", "{{ vram | default('128') }}"]
+      vb.customize ["modifyvm", :id, "--audio", "{{ audio | default('coreaudio') }}"]
+      vb.customize ["modifyvm", :id, "--audiocontroller", "{{ audiocontroller | default('hda') }}"]
+      vb.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+  end
+
+  {% if playbook %}
+  config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "{{ playbook }}"
+      ansible.inventory_path = "{{ inventory_file | default('ansible/hosts') }}"
+      ansible.limit = "{{ limit | default('all') }}"
+      ansible.config_file = "{{ config_file | default('ansible/ansible.cfgi') }}"
+  end
+  {% endif %}
+
+end

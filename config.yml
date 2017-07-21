@@ -1,0 +1,48 @@
+---
+
+# Virtual Macine Definition
+vagrant:
+     name: "ecx-desktop"
+     ncpu: 2
+     memory: 2048
+     private_net:
+         ip: "192.168.56.30"
+         name: "vboxnet0"
+         adapter: 2
+
+# Ansible Configuration
+ansible:
+     playbook: "ansible/ubuntu-fluxbox.yml"
+     inventory_file: "ansible/hosts"
+     limit: "all"
+     config_file: "ansible/ansible.cfg"
+     inventory:
+          entry: "ecx-desktop"
+          groups:
+              - ecx
+     config:
+        - defaults:
+              remote_user: "vagrant"
+        - privilege_escalation:
+              become: "True"
+
+# Machine Configuration
+host_vars:
+    # User Configuration
+    user_config:
+        - user_name: "bwatts"
+          user_gcos: "Brian Watts"
+          user_crypt_passwd: "$6$gxPnXTMb$4Je18w87.IdftVy51oz58bM8/2i5CnakbrH3beprPzUm6w/oA1A21qbUyM.1XEQXWfhhn.2xZZnn0hTG5581R1"
+          user_secgrps: [ "vboxsf", "audio", "adm", "sudo",  "video" ]
+          user_ssh_auth_keys_file: "bwatts.authorized_keys" 
+          user_dot_files_repo: "https://github.com/bw31642/dotfiles.git"
+          user_home_tar_ball: "http://wattsy.duckdns.org:8888/files/bwatts-home.tar"
+
+    # Software Configuration
+    software_config:
+         conky:
+             - conky_user_name: "bwatts"
+               conky_vpn_iface: "utun0"
+               conky_env_name: "ECX"
+               conky_env_iface: "enp0s8"
+
