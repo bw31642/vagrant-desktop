@@ -3,8 +3,19 @@
 Simple script to prepare a Vagrantfile for a linux desktop
 Parameter driven from a YAML config file.
 
+## Requirements
+
+The following Python modules are required. All are avaiable via pip install.
+
+- pyyaml
+- docopt
+- json
+- jinja2
+
 ## Usage
 
+    $ git clone https://github.com/bw31642/vagrant-desktop
+    $ cd vagrant-desktop
     $ mkdir ansible
     $ cd ansible
     $ git clone https://github.com/bw31642/ansible-desktop.git .
